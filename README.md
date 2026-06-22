@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/Lombok-ED8B00?style=flat-square" alt="Lombok"/>
 </p>
 
-<h1 align="center">🛒 eBuy — Backend API</h1>
+<h1 align="center">🛒 spring E-Commerce— Backend API</h1>
 <p align="center">
   A <strong>RESTful e-commerce backend</strong> built with Spring Boot 4.1 and PostgreSQL.<br>
   Clean layered architecture. Loosely coupled. Production-ready structure.
