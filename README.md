@@ -330,46 +330,46 @@ cd SpringEcom
 > *Screenshots will be added after deployment. Below are placeholders for the key views.*
  
 ### Home Page — Product Grid
-```
+
 <img width="626" height="346" alt="Screenshot 2026-06-23 174511" src="https://github.com/user-attachments/assets/461f0fb9-4edb-496c-bd4e-e54fe7acd8eb" />
 
-```
+
  
 ### Product Details
-```
+
 <img width="635" height="346" alt="Screenshot 2026-06-23 174521" src="https://github.com/user-attachments/assets/5fedaca3-7dab-476e-afea-ae7066ecf018" />
 
-```
+
  
 ### Shopping Cart
-```
+
 <img width="638" height="356" alt="Screenshot 2026-06-23 174554" src="https://github.com/user-attachments/assets/4ee8314e-cc12-4fe6-81e3-b3e19f8249e5" />
 
-```
+
  
 ### Checkout
-```
+
 <img width="639" height="357" alt="Screenshot 2026-06-23 174629" src="https://github.com/user-attachments/assets/412b3d53-a833-4ff0-af17-7e493cdd7139" />
 
-```
+
  
 ### Order History
-```
+
 <img width="637" height="359" alt="Screenshot 2026-06-23 174545" src="https://github.com/user-attachments/assets/65811f10-49d2-4b1b-8f20-eebffb0582cd" />
 
-```
+
  
 ### Add / Update Product
-```
+
 <img width="635" height="356" alt="Screenshot 2026-06-23 174531" src="https://github.com/user-attachments/assets/c97378f0-22da-44eb-a7c3-7da60b8c3bb0" />
 
-```
- 
 
  
 
+ ```
+
  
-```markdown
+
 
 ```
  
