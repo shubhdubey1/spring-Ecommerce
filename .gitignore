@@ -33,3 +33,6 @@ __MACOSX/
 # Build
 dist/
 build/
+
+backend/
+frontend/
