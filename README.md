@@ -177,7 +177,7 @@ E-comm final/
 | description | String | Product details |
 | brand | String | Manufacturer |
 | price | BigDecimal | — |
-| category | String | Laptop, Mobile, Fashion |
+| category | String | Laptop, Fashion, Mobile |
 | releaseDate | Date | JSON: dd-MM-yyyy |
 | stockQuantity | int | Validated on checkout |
 | productAvailable | boolean | Visibility toggle |
