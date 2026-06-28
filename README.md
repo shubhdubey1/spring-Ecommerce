@@ -217,7 +217,7 @@ All endpoints prefixed with `/api`. CORS enabled globally.
 |--------|----------|-------------|---------|
 | GET | /products | List all products | — |
 | GET | /product/{id} | Get by ID | Path param |
-| GET | /product/{id}/image | Get product image | Path param |
+| GET | /product/{id}/image | Get product image | Path parameter |
 | POST | /product | Create product | Multipart (JSON + imageFile) |
 | PUT | /product/{id} | Update product | Path param + Multipart |
 | DELETE | /product/{id} | Delete product | Path param |
@@ -327,7 +327,7 @@ cd SpringEcom
  
 ## 📸 Screenshots
  
-> *Screenshots will be added after deployment. Below are placeholders for the key views.*
+
  
 ### Home Page — Product Grid
 
