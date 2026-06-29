@@ -1,1 +1,3 @@
 *.* linguist-language=Java
+ebuy-frontend/** linguist-vendored
+__MACOSX/** linguist-vendored
