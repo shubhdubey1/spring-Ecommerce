@@ -1,23 +1,27 @@
-
-# 🛒 Spring-Ecommerce
- 
-**Full-stack e-commerce application** — Spring Boot 4.1 REST API + React frontend.
- 
-<p>
+<p align="center">
   <img src="https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=java" alt="Java 17"/>
   <img src="https://img.shields.io/badge/Spring_Boot-4.1-green?style=flat-square&logo=springboot" alt="Spring Boot 4.1"/>
+  <img src="https://img.shields.io/badge/Spring_Security-6.0-6DB33F?style=flat-square&logo=springsecurity" alt="Spring Security"/>
+  <img src="https://img.shields.io/badge/JWT_Auth-000000?style=flat-square&logo=jsonwebtokens" alt="JWT"/>
+  <img src="https://img.shields.io/badge/OAuth2_GitHub-181717?style=flat-square&logo=github" alt="OAuth2 GitHub"/>
   <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql" alt="PostgreSQL"/>
   <img src="https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react" alt="React 18"/>
   <img src="https://img.shields.io/badge/Maven-C71A36?style=flat-square&logo=apachemaven" alt="Maven"/>
   <img src="https://img.shields.io/badge/Lombok-ED8B00?style=flat-square" alt="Lombok"/>
 </p>
- 
+
+<h1 align="center">🛒 Spring-Ecommerce</h1>
+<p align="center">
+  <strong>Full-stack e-commerce application</strong> — Spring Boot 4.1 REST API + React frontend.<br>
+  Secured with JWT authentication & OAuth2 GitHub login.
+</p>
+
 ---
- 
+
 ## 📋 Overview
- 
+
 A full-featured e-commerce API with a React SPA frontend. Clean layered architecture with DTO-based data transfer, managed entity relationships (@OneToMany / @ManyToOne), and full order lifecycle support.
- 
+
 **Backend (SpringEcom):**
 - Full CRUD for products with image upload (multipart)
 - Order placement with automatic stock deduction
@@ -25,17 +29,20 @@ A full-featured e-commerce API with a React SPA frontend. Clean layered architec
 - JPA entity relationships with cascading persistence
 - Case-insensitive keyword search across 4 product fields
 - CORS enabled for SPA integration
- 
+- **JWT-based authentication** with stateless sessions
+- **OAuth2 social login** via GitHub
+- **BCrypt password hashing** for secure credential storage
+
 **Frontend (ebuy-frontend):**
 - React 18 SPA with Vite
 - Product listing, search, and cart
 - Checkout flow with order history
 - Add / update products with image upload
- 
+
 ---
- 
+
 ## 🏗️ Architecture
- 
+
 ```
                         ┌─────────────────────────────┐
                         │        REST Client           │
@@ -43,6 +50,12 @@ A full-featured e-commerce API with a React SPA frontend. Clean layered architec
                         └─────────────┬───────────────┘
                                       │ HTTP / JSON (DTOs)
                                       ▼
+                 ┌─────────────────────────────────────┐
+                 │        JwtFilter (Security)         │
+                 │  Validates Bearer token on requests │
+                 └─────────────┬───────────────────────┘
+                               │
+                               ▼
 ┌─────────────────────────────────────────────────────────┐
 │                    Controller Layer                      │
 │  ┌────────────────────┐    ┌────────────────────┐       │
@@ -59,6 +72,11 @@ A full-featured e-commerce API with a React SPA frontend. Clean layered architec
 │  │  - Business logic  │    │  - Order placement │       │
 │  │  - Image handling  │    │  - Stock deduction │       │
 │  │  - Search          │    │  - DTO mapping     │       │
+│  └─────────┬──────────┘    └─────────┬──────────┘       │
+│            │                         │                  │
+│  ┌────────────────────┐    ┌────────────────────┐       │
+│  │   JwtService       │    │ MyUserDetailsService│       │
+│  │  - Token gen/val   │    │  - UserDetails     │       │
 │  └─────────┬──────────┘    └─────────┬──────────┘       │
 └────────────┼─────────────────────────┼──────────────────┘
              │                         │
@@ -79,45 +97,49 @@ A full-featured e-commerce API with a React SPA frontend. Clean layered architec
               │  Database: springecom│
               └─────────────────────┘
 ```
- 
+
 ### Request Flow
- 
+
 ```mermaid
 sequenceDiagram
     participant Client as React SPA
+    participant JF as JwtFilter
     participant Controller as ProductController
     participant Service as ProductService
     participant Repo as ProductRepo
     participant DB as PostgreSQL
- 
-    Client->>Controller: GET /api/products
+
+    Client->>JF: GET /products (JWT token attached)
+    JF->>JF: Validate JWT token
+    JF->>Controller: Forward request
     Controller->>Service: getProducts()
     Service->>Repo: findAll()
     Repo->>DB: SELECT * FROM product
-    DB-->>Repo: Result set
-    Repo-->>Service: List<Product>
-    Service-->>Controller: List<Product>
+    DB-->>Repo: Results
+    Repo-->>Service: Product list
+    Service-->>Controller: Product list
     Controller-->>Client: 200 OK + JSON
 ```
- 
+
 ---
- 
+
 ## 🛠️ Tech Stack
- 
+
 | Layer | Technology |
 |-------|------------|
 | Language | Java 17 |
 | Framework | Spring Boot 4.1.0 |
+| Security | Spring Security 6.x, JWT (jjwt), OAuth2 Client |
 | ORM | Spring Data JPA / Hibernate |
 | Database | PostgreSQL 16 |
 | Frontend | React 18 + Vite |
 | Build | Maven (backend) / npm (frontend) |
 | Boilerplate | Project Lombok |
- 
+
 ---
- 
+
 ## 📁 Project Structure
- 
+
 ```
 E-comm final/
 │
@@ -125,14 +147,20 @@ E-comm final/
 │   ├── pom.xml
 │   └── src/main/java/com/springcourse/springecom/
 │       ├── SpringEcomApplication.java
+│       ├── config/
+│       │   └── SecurityConfiguration.java    # Spring Security, CORS, OAuth2
 │       ├── controller/
 │       │   ├── ProductController.java
 │       │   ├── OrderController.java
-│       │   └── HelloController.java
+│       │   └── UserController.java           # Register, Login, Logout
+│       ├── filter/
+│       │   └── JwtFilter.java               # Once-per-request JWT validation
 │       ├── model/
 │       │   ├── Product.java
 │       │   ├── Order.java
 │       │   ├── OrderItem.java
+│       │   ├── User.java                    # User entity (BCrypt passwords)
+│       │   ├── UserPrincipal.java           # UserDetails implementation
 │       │   └── dtos/
 │       │       ├── OrderRequest.java
 │       │       ├── OrderResponse.java
@@ -140,19 +168,24 @@ E-comm final/
 │       │       └── OrderItemResponse.java
 │       ├── repository/
 │       │   ├── ProductRepo.java
-│       │   └── OrderRepo.java
+│       │   ├── OrderRepo.java
+│       │   └── UserRepo.java
 │       └── service/
 │           ├── ProductService.java
-│           └── OrderService.java
+│           ├── OrderService.java
+│           ├── UserService.java             # Registration with BCrypt
+│           ├── JwtService.java              # Token generation & validation
+│           └── MyUserDetailsService.java
 │
 └── ebuy-frontend/                    # Frontend SPA
     ├── package.json
     ├── vite.config.js
     └── src/
         ├── App.jsx
-        ├── axios.jsx
+        ├── axios.jsx                  # Axios with JWT interceptor
         ├── Context/Context.jsx
         └── components/
+            ├── Auth.jsx               # Login/Register + GitHub OAuth2
             ├── Home.jsx
             ├── Product.jsx
             ├── Cart.jsx
@@ -163,13 +196,13 @@ E-comm final/
             ├── CheckoutPopup.jsx
             └── SearchResults.jsx
 ```
- 
+
 ---
- 
+
 ## 📊 Data Model
- 
+
 ### Product
- 
+
 | Field | Type | JPA Mapping |
 |-------|------|-------------|
 | id | Integer | @Id @SequenceGenerator(name = "my_own_seq") |
@@ -182,9 +215,9 @@ E-comm final/
 | stockQuantity | int | Validated on checkout |
 | productAvailable | boolean | Visibility toggle |
 | imageData | byte[] | @Lob — stored as BLOB |
- 
+
 ### Order
- 
+
 | Field | Type | JPA Mapping |
 |-------|------|-------------|
 | id | long | @Id @GeneratedValue |
@@ -194,9 +227,9 @@ E-comm final/
 | status | String | e.g. PLACED |
 | orderDate | LocalDateTime | Auto-set on creation |
 | items | List\<OrderItem\> | @OneToMany(cascade = ALL) |
- 
+
 ### OrderItem
- 
+
 | Field | Type | JPA Mapping |
 |-------|------|-------------|
 | id | long | @Id @GeneratedValue |
@@ -204,15 +237,30 @@ E-comm final/
 | quantity | int | Units ordered |
 | totalPrice | BigDecimal | price x quantity |
 | order | Order | @ManyToOne (LAZY fetch) |
- 
+
+### User
+
+| Field | Type | Notes |
+|-------|------|-------|
+| id | Integer | @Id, sequence-generated |
+| username | String | Unique login identifier |
+| password | String | BCrypt-encoded (empty for OAuth2 users) |
+
 ---
- 
+
 ## 🌐 API Endpoints
- 
-All endpoints prefixed with `/api`. CORS enabled globally.
- 
+
+### Authentication (no token required)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /register | Create account (BCrypt-hashed password) |
+| POST | /login | Authenticate & receive JWT token |
+| POST | /logout | Clear session |
+| GET | /oauth2/authorization/github | Sign in with GitHub |
+
 ### Products
- 
+
 | Method | Endpoint | Description | Request |
 |--------|----------|-------------|---------|
 | GET | /products | List all products | — |
@@ -222,16 +270,18 @@ All endpoints prefixed with `/api`. CORS enabled globally.
 | PUT | /product/{id} | Update product | Path param + Multipart |
 | DELETE | /product/{id} | Delete product | Path param |
 | GET | /products/search?keyword= | Search products | Query param |
- 
+
 ### Orders
- 
+
 | Method | Endpoint | Description | Request |
 |--------|----------|-------------|---------|
 | GET | /orders | List all orders | — |
 | POST | /orders/place | Place order | OrderRequest JSON |
- 
+
+> All endpoints except `/register`, `/login`, and `/oauth2/**` require `Authorization: Bearer <jwt_token>` header. The frontend attaches this automatically via an Axios interceptor.
+
 ### Order Request (JSON body)
- 
+
 ```json
 {
   "customerName": "Shubh Dubey",
@@ -242,9 +292,9 @@ All endpoints prefixed with `/api`. CORS enabled globally.
   ]
 }
 ```
- 
+
 ### Order Flow
- 
+
 ```mermaid
 sequenceDiagram
     participant Client as React SPA
@@ -252,7 +302,7 @@ sequenceDiagram
     participant OS as OrderService
     participant PR as ProductRepo
     participant OR as OrderRepo
- 
+
     Client->>OC: POST /api/orders/place
     OC->>OS: placeOrder(OrderRequest)
     OS->>PR: findProductById(id)
@@ -266,151 +316,135 @@ sequenceDiagram
     OS-->>OC: OrderResponse DTO
     OC-->>Client: 201 Created + OrderResponse
 ```
- 
+
 ---
- 
+
 ## ⚙️ Configuration
- 
+
 ```properties
 # Server
 spring.application.name=SpringEcom
 server.port=8080
- 
+
 # Database
 spring.datasource.url=jdbc:postgresql://localhost:5432/springecom
 spring.datasource.username=postgres
 spring.datasource.password=your_password_here
 spring.datasource.driver-class-name=org.postgresql.Driver
- 
+
 # JPA
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
- 
+
 # File Upload
 spring.servlet.multipart.max-file-size=30MB
 spring.servlet.multipart.max-request-size=30MB
+
+# OAuth2 (GitHub)
+spring.security.oauth2.client.registration.github.client-id=your_client_id
+spring.security.oauth2.client.registration.github.client-secret=your_client_secret
 ```
- 
+
 ---
- 
+
 ## 🚀 Getting Started
- 
+
 **Prerequisites:** Java 17+, PostgreSQL 16+, Node.js 18+
- 
+
 ```bash
 # 1. Clone
 git clone https://github.com/shubhdubey1/spring-Ecommerce.git
 cd "E-comm final"
- 
+
 # 2. Backend
 cd SpringEcom
 ./mvnw spring-boot:run        # -> http://localhost:8080
- 
+
 # 3. Frontend (new terminal)
 cd ebuy-frontend
 npm install
 npm run dev                   # -> http://localhost:5173
 ```
- 
+
 ---
- 
+
 ## 🧪 Testing
- 
+
 ```bash
 cd SpringEcom
 ./mvnw test
 ```
- 
----
----
- 
-## 📸 Screenshots
- 
 
- 
+---
+
+## 📸 Screenshots
+
 ### Home Page — Product Grid
 
 <img width="626" height="346" alt="Screenshot 2026-06-23 174511" src="https://github.com/user-attachments/assets/461f0fb9-4edb-496c-bd4e-e54fe7acd8eb" />
 
-
- 
 ### Product Details
 
 <img width="635" height="346" alt="Screenshot 2026-06-23 174521" src="https://github.com/user-attachments/assets/5fedaca3-7dab-476e-afea-ae7066ecf018" />
 
-
- 
 ### Shopping Cart
 
 <img width="638" height="356" alt="Screenshot 2026-06-23 174554" src="https://github.com/user-attachments/assets/4ee8314e-cc12-4fe6-81e3-b3e19f8249e5" />
 
-
- 
 ### Checkout
 
 <img width="639" height="357" alt="Screenshot 2026-06-23 174629" src="https://github.com/user-attachments/assets/412b3d53-a833-4ff0-af17-7e493cdd7139" />
 
-
- 
 ### Order History
 
 <img width="637" height="359" alt="Screenshot 2026-06-23 174545" src="https://github.com/user-attachments/assets/65811f10-49d2-4b1b-8f20-eebffb0582cd" />
 
-
- 
 ### Add / Update Product
 
 <img width="635" height="356" alt="Screenshot 2026-06-23 174531" src="https://github.com/user-attachments/assets/c97378f0-22da-44eb-a7c3-7da60b8c3bb0" />
 
+---
 
- 
-
- ```
-
- 
-
-
-```
- 
 ## 💡 Key Features
- 
+
 | Feature | Description |
 |---------|-------------|
+| JWT Authentication | Stateless token-based auth with Spring Security filter chain |
+| OAuth2 Social Login | GitHub OAuth2 with auto-registration & JWT bridging |
 | DTO-based transfer | Clean API contracts (OrderRequest / OrderResponse) separate from JPA entities |
 | Entity relationships | @OneToMany + @ManyToOne with cascading persistence |
 | Custom JPQL search | Case-insensitive search across name, brand, description, category |
 | Order orchestration | Automatic stock validation and deduction on order placement |
 | Image upload | Multipart file handling with BLOB storage in PostgreSQL |
 | CORS enabled | Cross-origin support for SPA integration |
-| Layered architecture | Controller -> Service -> Repository, independently testable |
- 
+| Layered architecture | Controller → Service → Repository + Security filter, independently testable |
+
 ---
- 
+
 ## 🚧 Future Improvements
- 
-- [ ] JWT / OAuth2 authentication
+
 - [ ] Payment gateway (Razorpay, Stripe)
 - [ ] Pagination for product listings
 - [ ] Input validation with @Valid
 - [ ] Docker Compose for one-command setup
 - [ ] Integration tests with Testcontainers
- 
+
 ---
- 
+
 ## 🙌 Acknowledgements
- 
+
 - Backend concepts from the Telusko Spring Boot course
 - Frontend UI refinements assisted by LLM; core logic and architecture implemented independently
- 
+
 ---
- 
+
 ## 👤 Author
- 
+
 **Shubh Dubey** — [@shubhdubey1](https://github.com/shubhdubey1)
- 
+
 ---
- 
+
 ## 📄 License
- 
+
 Open source for learning and portfolio purposes.
