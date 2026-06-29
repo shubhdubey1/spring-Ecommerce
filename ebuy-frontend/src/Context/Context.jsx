@@ -52,7 +52,7 @@ export const AppProvider = ({ children }) => {
 
   const refreshData = async () => {
     try {
-      const response = await axios.get(`${baseUrl}/products`);
+      const response = await axios.get(`${baseUrl}/api/products`);
       setData(response.data);
     } catch (error) {
       setIsError(error.message);

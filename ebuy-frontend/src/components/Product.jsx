@@ -15,7 +15,7 @@ const Product = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${baseUrl}/product/${id}`);
+        const response = await axios.get(`${baseUrl}/api/product/${id}`);
         setProduct(response.data);
         if (response.data.imageName) {
           fetchImage();
@@ -26,7 +26,7 @@ const Product = () => {
     };
 
     const fetchImage = async () => {
-      const response = await axios.get(`${baseUrl}/product/${id}/image`, {
+      const response = await axios.get(`${baseUrl}/api/product/${id}/image`, {
         responseType: "blob",
       });
       setImageUrl(URL.createObjectURL(response.data));
@@ -36,7 +36,7 @@ const Product = () => {
 
   const deleteProduct = async () => {
     try {
-      await axios.delete(`${baseUrl}/product/${id}`);
+      await axios.delete(`${baseUrl}/api/product/${id}`);
       toast.success("Product deleted successfully");
       refreshData();
       navigate("/");

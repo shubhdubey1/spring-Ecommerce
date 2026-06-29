@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import AppContext from "../Context/Context";
-import API from "../axios";
 
 const Navbar = ({ onSelectCategory }) => {
   const getInitialTheme = () => {
@@ -22,15 +22,18 @@ const Navbar = ({ onSelectCategory }) => {
   const navigate = useNavigate();
   const baseUrl = import.meta.env.VITE_BASE_URL;
 
+  // Derive cart count directly from context (real-time, no localStorage polling)
   const cartCount = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   useEffect(() => {
     fetchInitialData();
   }, []);
 
+
+
   const fetchInitialData = async () => {
     try {
-      await API.get(`${baseUrl}/products`);
+      await axios.get(`${baseUrl}/api/products`);
     } catch (error) {
       console.error("Error fetching initial data:", error);
     }
@@ -48,8 +51,8 @@ const Navbar = ({ onSelectCategory }) => {
     setIsLoading(true);
 
     try {
-      const response = await API.get(
-        `${baseUrl}/products/search?keyword=${input}`
+      const response = await axios.get(
+        `${baseUrl}/api/products/search?keyword=${input}`
       );
       if (response.data.length === 0) {
         setShowNoProductsMessage(true);
@@ -62,17 +65,6 @@ const Navbar = ({ onSelectCategory }) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await API.post("/logout");
-    } catch (err) {
-      // still clear local state even if server errors
-    }
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    window.location.href = "/login";
   };
 
   const handleCategorySelect = (category) => {
@@ -101,34 +93,14 @@ const Navbar = ({ onSelectCategory }) => {
       <div className="ebay-top-bar">
         <div style={{ maxWidth: "1260px", margin: "0 auto", padding: "0 16px", display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
           <div>
-            <span style={{ color: "#999" }}>Hi, </span>
-            <span style={{ fontWeight: 600, color: "#fff" }}>{localStorage.getItem("username") || "User"}</span>
+            <span style={{ color: "#999" }}>Hi!</span>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate("/"); }} style={{ fontWeight: 600, color: "#fff" }}> Sign in</a>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <a href="#" onClick={(e) => { e.preventDefault(); navigate("/orders"); }}>My Orders</a>
             <a href="#" onClick={(e) => { e.preventDefault(); navigate("/add_product"); }}>
               <i className="bi bi-megaphone me-1"></i>Sell
             </a>
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "1px solid rgba(255,255,255,0.3)",
-                color: "#fff",
-                padding: "4px 12px",
-                borderRadius: "4px",
-                fontSize: "13px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                transition: "background 0.2s",
-              }}
-              onMouseEnter={(e) => e.target.style.background = "rgba(255,255,255,0.1)"}
-              onMouseLeave={(e) => e.target.style.background = "none"}
-            >
-              <i className="bi bi-box-arrow-right"></i> Logout
-            </button>
           </div>
         </div>
       </div>
@@ -217,7 +189,12 @@ const Navbar = ({ onSelectCategory }) => {
           </li>
           {categories.map((cat) => (
             <li key={cat}>
-   
+              <button
+                className={`ebay-category-link ${selectedCategory === cat ? "active" : ""}`}
+                onClick={() => handleCategorySelect(cat)}
+              >
+                {cat}
+              </button>
             </li>
           ))}
         </ul>

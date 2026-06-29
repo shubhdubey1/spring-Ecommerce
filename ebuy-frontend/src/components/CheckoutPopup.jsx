@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../axios";
 
 const CheckoutPopup = ({ show, handleClose, cartItems, totalPrice }) => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -38,7 +38,13 @@ const CheckoutPopup = ({ show, handleClose, cartItems, totalPrice }) => {
     };
 
     try {
-      await API.post("/orders/place", data);
+      const response = await fetch(`${baseUrl}/api/orders/place`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) throw new Error("Failed to place order");
 
       setToastVariant("success");
       setToastMessage("Order placed successfully!");
@@ -75,7 +81,7 @@ const CheckoutPopup = ({ show, handleClose, cartItems, totalPrice }) => {
               {cartItems.map((item) => (
                 <div key={item.id} className="checkout-item">
                   <img
-                    src={`${import.meta.env.VITE_BASE_URL}/product/${item.id}/image`}
+                    src={`${baseUrl}/api/product/${item.id}/image`}
                     alt={item.name}
                     className="checkout-item-img"
                   />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import API from "../axios";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -82,8 +82,8 @@ const AddProduct = () => {
       new Blob([JSON.stringify(product)], { type: "application/json" })
     );
 
-    API
-      .post(`${baseUrl}/product`, formData, {
+    axios
+      .post(`${baseUrl}/api/product`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {

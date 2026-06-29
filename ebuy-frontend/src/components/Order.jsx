@@ -1,4 +1,4 @@
-import API from "../axios";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Order = () => {
@@ -11,7 +11,7 @@ const Order = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await API.get(`${baseUrl}/orders`);
+        const response = await axios.get(`${baseUrl}/api/orders`);
         setOrders(response.data);
         setLoading(false);
       } catch (error) {

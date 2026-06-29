@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import AppContext from "../Context/Context";
-import API from "../axios";
+import axios from "axios";
 import CheckoutPopup from "./CheckoutPopup";
 
 const Cart = () => {
@@ -58,8 +58,8 @@ const Cart = () => {
           new Blob([JSON.stringify(updatedProductData)], { type: "application/json" })
         );
 
-        await API
-          .put(`${baseUrl}/product/${item.id}`, cartProduct, {
+        await axios
+          .put(`${baseUrl}/api/product/${item.id}`, cartProduct, {
             headers: { "Content-Type": "multipart/form-data" },
           })
           .then((response) => {
@@ -95,7 +95,7 @@ const Cart = () => {
             {cartItems.map((item) => (
               <div className="cart-item" key={item.id}>
                 <img
-                  src={`${baseUrl}/product/${item.id}/image`}
+                  src={`${baseUrl}/api/product/${item.id}/image`}
                   alt={item.name}
                   className="cart-item-img"
                 />

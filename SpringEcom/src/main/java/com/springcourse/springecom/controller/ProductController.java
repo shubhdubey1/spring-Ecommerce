@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @CrossOrigin
 public class ProductController {
 

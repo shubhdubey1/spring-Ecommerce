@@ -1,4 +1,4 @@
-project, take referenve from the existing one <p align="center">
+<p align="center">
   <img src="https://img.shields.io/badge/Java-17-orange?style=flat-square&logo=java" alt="Java 17"/>
   <img src="https://img.shields.io/badge/Spring%20Boot-4.1-green?style=flat-square&logo=springboot" alt="Spring Boot 4.1"/>
   <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql" alt="PostgreSQL"/>

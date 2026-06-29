@@ -1,25 +1,38 @@
-﻿# Backend
-SpringEcom/target/
-SpringEcom/.idea/
-SpringEcom/.mvn/wrapper/maven-wrapper.jar
+# Node
+node_modules/
+npm-debug.log*
 
-# Frontend
-ebuy-frontend/node_modules/
-ebuy-frontend/dist/
-ebuy-frontend/.idea/
-ebuy-frontend/.ollamassist/
+# Java / Maven
+*.class
+*.jar
+*.war
+*.log
+target/
+!.mvn/wrapper/maven-wrapper.jar
 
 # IDE
 .idea/
-.vscode/
 *.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
 
 # OS
 .DS_Store
 Thumbs.db
+__MACOSX/
 
-# macOS metadata
-__MACOSX
-
-# Environment files
+# Env
 .env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+
+backend/
+frontend/
